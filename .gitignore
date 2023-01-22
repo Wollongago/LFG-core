@@ -1,0 +1,7 @@
+.vscode
+**/.idea
+**/__pycache__
+!/**/.gitkeep
+cache/**
+Service/Flask
+Service/Frontend
