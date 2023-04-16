@@ -1,0 +1,64 @@
+version: "3"
+
+services:
+  celery_default:
+    privileged: true
+    image: lfg-celery:latest
+    volumes:
+      - "../Flask/src:/application"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - lfg-net
+    user: ${UID:-1000}:${GID:-1000}
+    stop_grace_period: 3m
+    command: >
+      dockerize -wait tcp://redis:6379 -timeout 30s -wait tcp://mongodb:27017 -timeout 30s celery.sh -q celery_default -n celery_default
+
+  celery_beat:
+    privileged: true
+    image: lfg-celery:latest
+    volumes:
+      - "../Flask/src:/application"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - lfg-net
+    user: ${UID:-1000}:${GID:-1000}
+    stop_grace_period: 3m
+    command: >
+      dockerize -wait tcp://redis:6379 -timeout 30s -wait tcp://mongodb:27017 -timeout 30s celery.sh -b
+
+  mongodb:
+    image: lfg-mongodb:latest
+    privileged: true
+    volumes:
+      - /data/mongo_db:/data/mongo_db
+      - ../MongoDB/configs/development/mongod.conf:/etc/mongod.conf
+    networks:
+      - lfg-net
+    hostname: mongodb
+    command: >
+      mongod  --config /etc/mongod.conf
+
+  redis:
+    privileged: true
+    image: lfg-redis:latest
+    volumes:
+      - ../.../data/redis:/data/redis
+      - ../Redis/configs/development:/etc/redis
+    command: >
+      --requirepass LFGDev
+    networks:
+      - lfg-net
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 100000
+        hard: 500000
+
+networks:
+  lfg-net:
+    external: true
