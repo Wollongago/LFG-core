@@ -9,12 +9,13 @@ services:
     depends_on:
       - mongodb
       - redis
+      - rabbitmq
     networks:
       - lfg-net
     user: ${UID:-1000}:${GID:-1000}
     stop_grace_period: 3m
     command: >
-      dockerize -wait tcp://redis:6379 -timeout 30s -wait tcp://mongodb:27017 -timeout 30s celery.sh -q celery_default -n celery_default
+      dockerize -wait tcp://rabbitmq:5672 -timeout 30s -wait tcp://redis:6379 -timeout 30s -wait tcp://mongodb:27017 -timeout 30s /usr/local/bin/celery.sh -q celery_default -n celery_default
 
   celery_beat:
     privileged: true
@@ -24,12 +25,13 @@ services:
     depends_on:
       - mongodb
       - redis
+      - rabbitmq
     networks:
       - lfg-net
     user: ${UID:-1000}:${GID:-1000}
     stop_grace_period: 3m
     command: >
-      dockerize -wait tcp://redis:6379 -timeout 30s -wait tcp://mongodb:27017 -timeout 30s celery.sh -b
+      dockerize -wait tcp://rabbitmq:5672 -wait tcp://redis:6379 -timeout 30s -wait tcp://mongodb:27017 -timeout 30s celery.sh -b
 
   mongodb:
     image: lfg-mongodb:latest
@@ -42,6 +44,18 @@ services:
     hostname: mongodb
     command: >
       mongod  --config /etc/mongod.conf
+
+  rabbitmq:
+    image: lfg-rabbitmq:latest
+    ports:
+      - "127.0.0.1:18080:15672"
+    networks:
+      - lfg-net
+    environment:
+      - RABBITMQ_ERLANG_COOKIE="n9+e$$t@_scy_zg3o2#uj$$n09lpvk@@)h!ury533)=dg_6z3-(15"
+      - RABBITMQ_DEFAULT_USER="Wollongago"
+      - RABBITMQ_DEFAULT_PASS="LFGDev"
+    hostname: rabbitmq-master
 
   redis:
     privileged: true
