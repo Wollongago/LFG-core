@@ -52,9 +52,9 @@ services:
     networks:
       - lfg-net
     environment:
-      - RABBITMQ_ERLANG_COOKIE="n9+e$$t@_scy_zg3o2#uj$$n09lpvk@@)h!ury533)=dg_6z3-(15"
-      - RABBITMQ_DEFAULT_USER="Wollongago"
-      - RABBITMQ_DEFAULT_PASS="LFGDev"
+      # - RABBITMQ_ERLANG_COOKIE="n9+e$$t@_scy_zg3o2#uj$$n09lpvk@@)h!ury533)=dg_6z3-(15"
+      - RABBITMQ_DEFAULT_USER=Wollongago
+      - RABBITMQ_DEFAULT_PASS=LFGDev
     hostname: rabbitmq-master
 
   redis:

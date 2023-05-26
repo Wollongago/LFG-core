@@ -1,4 +1,4 @@
-FROM rabbitmq:3.9.16-management
+FROM rabbitmq:3.9.29-management
 
 LABEL maintainer="KycKyc" version="3.9.16-2.0.0"
 
