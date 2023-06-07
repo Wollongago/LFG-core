@@ -32,17 +32,17 @@ down:
 
 restart:
 	@echo "============= Restart Celery: $(I) ============="
-	@LOGPATH=$$(docker inspect --format='{{.LogPath}}' lfg-celery-$(I)-1); \
+	@LOGPATH=$$(docker inspect --format='{{.LogPath}}' lfg-celery_$(I)-1); \
 	if [ -n "$${LOGPATH}" ]; then sudo truncate -s 0 $${LOGPATH}; fi
-	docker-compose -p lfg restart celery-$(I)
+	docker-compose -p lfg restart celery_$(I)
 
 stop:
 	@echo "============= Stopping Celery: $(I) ============="
-	docker-compose -p lfg stop celery-${I}
+	docker-compose -p lfg stop celery_${I}
 
 logs:
 	@echo "============= Logs of Celery: $(I) ============="
-	docker-compose -p lfg logs -f celery-${I}
+	docker-compose -p lfg logs -f celery_${I}
 
 bash:
 	@echo "============= Entering Celery bash shell as $(UID):$(GID) ============="
