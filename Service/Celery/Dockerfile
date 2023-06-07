@@ -1,4 +1,4 @@
 # Override stop signal for Beat
-FROM --platform=linux/amd64 lfg-flask-http:latest
+FROM lfg-flask-http:latest
 
 STOPSIGNAL SIGTERM
